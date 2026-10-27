@@ -1,0 +1,1 @@
+LOAD "tests/sample_data/sample_logs.csv"

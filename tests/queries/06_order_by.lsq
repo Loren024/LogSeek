@@ -1,0 +1,2 @@
+LOAD "tests/sample_data/sample_logs.csv"
+ORDER BY "timestamp" DESC

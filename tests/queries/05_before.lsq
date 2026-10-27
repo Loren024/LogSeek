@@ -1,0 +1,2 @@
+LOAD "tests/sample_data/sample_logs.csv"
+BEFORE "timestamp" "2026-09-01 01:00:00"

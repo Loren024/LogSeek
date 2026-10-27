@@ -1,0 +1,6 @@
+LOAD "tests/sample_data/sample_logs.csv"
+WHERE "severity" = "ERROR"
+AFTER "timestamp" "2027-03-01"
+FIND "timestamp", "Service", "message"
+ORDER BY "timestamp" DESC
+LIMIT 2
