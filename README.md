@@ -4,9 +4,6 @@ LogSeek is a small domain-specific language (DSL) for querying structured applic
 logs stored in CSV files. You write a query in a plain-text file, run it once, and
 LogSeek prints a table of matching rows — optionally exporting the result to another CSV.
 
-- **Language specification:** `documentation/LogSeek_Documentation_v0.6.md`
-- **Build contract:** `documentation/IMPLEMENTATION_BRIEF.md`
-
 ## Requirements
 
 Python **3.9 or newer**. Nothing else — LogSeek uses only the standard library, so there
