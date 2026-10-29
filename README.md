@@ -6,7 +6,7 @@ LogSeek prints a table of matching rows, optionally exporting the result to anot
 
 ## Requirements
 
-Python **3.9 or newer**. Nothing else — LogSeek uses only the standard library, so there
+Python **3.9 or newer**. Nothing else, LogSeek uses only the standard library, so there
 is no build step, no installer, and no third-party dependency. A run needs three things:
 the LogSeek program file, the query file, and the CSV being queried.
 
