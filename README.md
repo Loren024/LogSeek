@@ -2,14 +2,11 @@
 
 LogSeek is a small domain-specific language (DSL) for querying structured application
 logs stored in CSV files. You write a query in a plain-text file, run it once, and
-LogSeek prints a table of matching rows — optionally exporting the result to another CSV.
-
-- **Language specification:** `documentation/LogSeek_Documentation_v0.6.md`
-- **Build contract:** `documentation/IMPLEMENTATION_BRIEF.md`
+LogSeek prints a table of matching rows, optionally exporting the result to another CSV.
 
 ## Requirements
 
-Python **3.9 or newer**. Nothing else — LogSeek uses only the standard library, so there
+Python **3.9 or newer**. Nothing else, LogSeek uses only the standard library, so there
 is no build step, no installer, and no third-party dependency. A run needs three things:
 the LogSeek program file, the query file, and the CSV being queried.
 
@@ -52,10 +49,10 @@ timestamp            Service   event_code  severity  message
 If the query ends with `EXPORT` and the destination already exists, LogSeek asks first:
 
 ```
-error_results.csv already exists. Overwrite? [y/N]:
+error_results.csv already exists. Overwrite? [y/N] 
 ```
 
-Only `y` or `Y` overwrites. Anything else — or no input at all — declines the export and
+Only `y` or `Y` overwrites. Anything else, or no input at all, declines the export and
 leaves the existing file untouched. If the prompt cannot be shown because input is not
 interactive, the export is refused rather than forced.
 
@@ -116,7 +113,7 @@ multi-column sorting, a REPL, and configurable formatting are not part of LogSee
 The table is fixed and non-configurable: a header row, a `-` separator row, then one row
 per match. Columns are separated by two spaces and padded to the widest displayed value,
 capped at 40 characters. Longer values are truncated to 37 characters followed by `...`.
-Line breaks and tabs inside values are shown as `\n` and `\t` for display only — exported
+Line breaks and tabs inside values are shown as `\n` and `\t` for display only, exported
 data always keeps the original characters. Table lines are right-trimmed, so no trailing
 padding is emitted.
 
@@ -141,10 +138,10 @@ The count is printed even when it is zero.
 |---|---|
 | `0` | Success. |
 | `1` | Any user-facing error: lexical, syntax, semantic, input, timestamp, export, or I/O. |
-| `2` | Invocation error — no query file and no piped query, or more than one argument. |
+| `2` | Invocation error, no query file and no piped query, or more than one argument. |
 
-**Standard output carries data only**: the table and the exclusion count. Everything else —
-errors, the overwrite prompt, and the optional `Exported N rows to "path".` confirmation —
+**Standard output carries data only**: the table and the exclusion count. Everything else,
+errors, the overwrite prompt, and the optional `Exported N rows to "path".` confirmation,
 goes to standard error.
 
 Errors are written in one canonical shape:
