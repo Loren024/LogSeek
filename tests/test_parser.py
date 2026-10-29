@@ -36,7 +36,7 @@ class ParserStructureTests(unittest.TestCase):
             'WHERE "severity" = "ERROR"\n'
             'AFTER "timestamp" "2026-10-01"\n'
             'BEFORE "timestamp" "2026-11-01"\n'
-            'FIND "Service", "message"\n'
+            'FIND "service", "message"\n'
             'ORDER BY "timestamp" DESC\n'
             "LIMIT 5\n"
             'EXPORT "out.csv"\n'
@@ -44,7 +44,7 @@ class ParserStructureTests(unittest.TestCase):
         self.assertEqual(len(query.where_conditions), 1)
         self.assertEqual(len(query.after_boundaries), 1)
         self.assertEqual(len(query.before_boundaries), 1)
-        self.assertEqual(query.output_columns, ["Service", "message"])
+        self.assertEqual(query.output_columns, ["service", "message"])
         self.assertEqual(query.sort_column, "timestamp")
         self.assertEqual(query.sort_direction, "DESC")
         self.assertEqual(query.limit, 5)
@@ -54,7 +54,7 @@ class ParserStructureTests(unittest.TestCase):
         query = build(
             'LOAD "a.csv"\n'
             'WHERE "severity" = "ERROR"\n'
-            'WHERE "Service" = "auth"\n'
+            'WHERE "service" = "auth"\n'
             'AFTER "timestamp" "2026-10-01"\n'
             'AFTER "timestamp" "2026-10-02"\n'
             'BEFORE "timestamp" "2026-11-01"\n'
@@ -103,7 +103,7 @@ class ParserPrecedenceTests(unittest.TestCase):
     def test_and_binds_tighter_than_or(self):
         query = build(
             'LOAD "a.csv"\n'
-            'WHERE "severity" = "ERROR" OR "severity" = "WARNING" AND "Service" = "payments"'
+            'WHERE "severity" = "ERROR" OR "severity" = "WARNING" AND "service" = "payments"'
         )
         root = query.where_conditions[0]
         self.assertEqual(root.kind, "OR")
@@ -113,7 +113,7 @@ class ParserPrecedenceTests(unittest.TestCase):
     def test_parentheses_override_precedence(self):
         query = build(
             'LOAD "a.csv"\n'
-            'WHERE ("severity" = "ERROR" OR "severity" = "WARNING") AND "Service" = "payments"'
+            'WHERE ("severity" = "ERROR" OR "severity" = "WARNING") AND "service" = "payments"'
         )
         root = query.where_conditions[0]
         self.assertEqual(root.kind, "AND")
@@ -123,7 +123,7 @@ class ParserPrecedenceTests(unittest.TestCase):
     def test_nested_parentheses(self):
         query = build(
             'LOAD "a.csv"\n'
-            'WHERE (("severity" = "ERROR") AND ("Service" = "auth" OR "Service" = "payments"))'
+            'WHERE (("severity" = "ERROR") AND ("service" = "auth" OR "service" = "payments"))'
         )
         root = query.where_conditions[0]
         self.assertEqual(root.kind, "AND")
@@ -161,10 +161,10 @@ class ParserErrorTests(unittest.TestCase):
         )
 
     def test_find_after_order_by_is_invalid(self):
-        self.assert_syntax_error('LOAD "a.csv"\nORDER BY "timestamp"\nFIND "Service"\n')
+        self.assert_syntax_error('LOAD "a.csv"\nORDER BY "timestamp"\nFIND "service"\n')
 
     def test_unknown_command(self):
-        self.assert_syntax_error('LOAD "a.csv"\nSELECT "Service"\n')
+        self.assert_syntax_error('LOAD "a.csv"\nSELECT "service"\n')
 
     def test_export_must_be_last(self):
         self.assert_syntax_error('LOAD "a.csv"\nEXPORT "out.csv"\nLIMIT 1\n')
@@ -182,7 +182,7 @@ class ParserErrorTests(unittest.TestCase):
         self.assert_syntax_error('LOAD "a.csv"\nWHERE ("severity" = "ERROR"\n')
 
     def test_extra_tokens_after_condition(self):
-        self.assert_syntax_error('LOAD "a.csv"\nWHERE "severity" = "ERROR" "Service"\n')
+        self.assert_syntax_error('LOAD "a.csv"\nWHERE "severity" = "ERROR" "service"\n')
 
     def test_unsupported_operator(self):
         self.assert_syntax_error('LOAD "a.csv"\nWHERE "severity" LIKE "ERROR"\n')
@@ -206,10 +206,10 @@ class ParserErrorTests(unittest.TestCase):
         self.assert_syntax_error('LOAD "a.csv"\nORDER BY "timestamp" SIDEWAYS\n')
 
     def test_find_without_quotes(self):
-        self.assert_syntax_error('LOAD "a.csv"\nFIND Service\n')
+        self.assert_syntax_error('LOAD "a.csv"\nFIND service\n')
 
     def test_find_trailing_comma(self):
-        self.assert_syntax_error('LOAD "a.csv"\nFIND "Service",\n')
+        self.assert_syntax_error('LOAD "a.csv"\nFIND "service",\n')
 
     def test_limit_without_a_number(self):
         self.assert_syntax_error('LOAD "a.csv"\nLIMIT many\n')
@@ -222,7 +222,7 @@ class ParserErrorTests(unittest.TestCase):
 
     def test_error_reports_the_offending_line(self):
         self.assert_syntax_error(
-            'LOAD "a.csv"\nWHERE "severity" = "ERROR"\nFIND "Service"\nWHERE "a" = "b"\n',
+            'LOAD "a.csv"\nWHERE "severity" = "ERROR"\nFIND "service"\nWHERE "a" = "b"\n',
             line=4,
         )
 

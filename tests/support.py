@@ -15,11 +15,11 @@ TESTS_DIR = os.path.join(REPO_ROOT, "tests")
 QUERIES = os.path.join(TESTS_DIR, "queries")
 SAMPLE_DATA = os.path.join(TESTS_DIR, "sample_data", "sample_logs.csv")
 
-HEADER = "timestamp,Service,event_code,severity,message"
+HEADER = "timestamp,service,event_code,severity,message"
 
 # Verified facts about the committed dataset (brief §10.1, §14 checksum box).
 SAMPLE_ROW_COUNT = 10000
-SAMPLE_SHA256 = "e80b16e14e806a618648b9bc58dee32f9f9a34401db9861129dbbcec306022e7"
+SAMPLE_SHA256 = "24830dabd8a61e9caf62f2f93eabd93c32bbaecf7e6b8eaf509550d2d000a909"
 
 # --- Runtime case text (brief §10.2) ---------------------------------------
 
@@ -28,7 +28,7 @@ HEADER_ONLY_TEXT = HEADER + "\n"
 RAGGED_TEXT = HEADER + "\n" + "2026-10-01 09:15:00,payments,4021,ERROR\n"
 
 BAD_HEADER_TEXT = (
-    "timestamp,Service,event_code,severity,Message\n"
+    "timestamp,service,event_code,severity,Message\n"
     "2026-10-01 09:15:00,payments,4021,ERROR,renamed\n"
 )
 

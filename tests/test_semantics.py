@@ -33,7 +33,7 @@ class SemanticValidationTests(unittest.TestCase):
             'WHERE "severity" = "ERROR" AND "message" CONTAINS "retry"\n'
             'AFTER "timestamp" "2026-10-01"\n'
             'BEFORE "timestamp" "2026-11-01 12:00:00"\n'
-            'FIND "Service", "message"\n'
+            'FIND "service", "message"\n'
             'ORDER BY "timestamp" DESC\n'
             "LIMIT 10\n"
             'EXPORT "out.csv"\n'
@@ -47,20 +47,20 @@ class SemanticValidationTests(unittest.TestCase):
         self.assertEqual(error.message, 'unknown column "Severity"')
 
     def test_unknown_column_in_find(self):
-        self.assert_error('LOAD "a.csv"\nFIND "service"\n', "semantic", line=2)
+        self.assert_error('LOAD "a.csv"\nFIND "Service"\n', "semantic", line=2)
 
     def test_unknown_column_in_order_by(self):
         self.assert_error('LOAD "a.csv"\nORDER BY "Time"\n', "semantic", line=2)
 
     def test_duplicate_find_column(self):
         error = self.assert_error(
-            'LOAD "a.csv"\nFIND "Service", "Service"\n', "semantic", line=2
+            'LOAD "a.csv"\nFIND "service", "service"\n', "semantic", line=2
         )
-        self.assertEqual(error.message, 'duplicate column "Service" in FIND')
+        self.assertEqual(error.message, 'duplicate column "service" in FIND')
 
     def test_after_requires_the_timestamp_column(self):
         error = self.assert_error(
-            'LOAD "a.csv"\nAFTER "Service" "2026-10-01"\n', "semantic", line=2
+            'LOAD "a.csv"\nAFTER "service" "2026-10-01"\n', "semantic", line=2
         )
         self.assertEqual(error.message, 'AFTER requires the "timestamp" column')
 
@@ -109,7 +109,7 @@ class SemanticValidationTests(unittest.TestCase):
 
     def test_error_line_points_at_the_offending_command(self):
         self.assert_error(
-            'LOAD "a.csv"\nWHERE "severity" = "ERROR"\nFIND "Service"\nFIND "Nope"\n',
+            'LOAD "a.csv"\nWHERE "severity" = "ERROR"\nFIND "service"\nFIND "Nope"\n',
             "syntax",
         )
 

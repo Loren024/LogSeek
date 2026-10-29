@@ -1,3 +1,3 @@
 LOAD "tests/sample_data/sample_logs.csv"
-WHERE "Service" = "gateway" AND "message" = "cache miss"
+WHERE "service" = "gateway" AND "message" = "cache miss"
 FIND "timestamp", "event_code"

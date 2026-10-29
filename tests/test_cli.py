@@ -75,7 +75,7 @@ class CliSuccessTests(unittest.TestCase):
 
     def test_empty_result_message(self):
         path = self.write_query(
-            'LOAD "%s"\nWHERE "Service" = "nobody"\n' % self.small_csv()
+            'LOAD "%s"\nWHERE "service" = "nobody"\n' % self.small_csv()
         )
         completed = run_cli([path])
         self.assertEqual(completed.returncode, 0)
@@ -164,7 +164,7 @@ class CliErrorTests(unittest.TestCase):
         self.assert_error(completed, 1, "logseek: error: lexical:")
 
     def test_syntax_error_reports_a_line_number(self):
-        path = self.write_query('LOAD "%s"\nSELECT "Service"\n' % SAMPLE)
+        path = self.write_query('LOAD "%s"\nSELECT "service"\n' % SAMPLE)
         completed = run_cli([path])
         self.assert_error(completed, 1, "logseek: error: syntax:")
         self.assertIn("(line 2)", completed.stderr)
@@ -235,17 +235,17 @@ class CliExportTests(unittest.TestCase):
         self.assertIn("Exported 3 rows to", completed.stderr)
         self.assertNotIn("Exported", completed.stdout)
         data = support.read_bytes(self.destination)
-        self.assertTrue(data.startswith(b"timestamp,Service,event_code,severity,message\r\n"))
+        self.assertTrue(data.startswith(b"timestamp,service,event_code,severity,message\r\n"))
 
     def test_zero_match_export_writes_a_header_only_file(self):
         target = self.destination.replace(os.sep, "/")
         path = self.write_query(
-            'LOAD "%s"\nWHERE "Service" = "nobody"\nFIND "Service", "message"\n'
+            'LOAD "%s"\nWHERE "service" = "nobody"\nFIND "service", "message"\n'
             'EXPORT "%s"\n' % (self.small_csv(), target)
         )
         completed = run_cli([path])
         self.assertEqual(completed.returncode, 0)
-        self.assertEqual(support.read_bytes(self.destination), b"Service,message\r\n")
+        self.assertEqual(support.read_bytes(self.destination), b"service,message\r\n")
 
     def test_declined_overwrite_leaves_the_file_unchanged(self):
         original = b"untouched\r\n"

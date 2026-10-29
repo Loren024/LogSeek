@@ -42,7 +42,7 @@ class LoaderTests(unittest.TestCase):
     def test_sample_dataset_loads_every_row(self):
         table = load_csv(support.SAMPLE_DATA)
         self.assertEqual(
-            table.headers, ["timestamp", "Service", "event_code", "severity", "message"]
+            table.headers, ["timestamp", "service", "event_code", "severity", "message"]
         )
         # Count verified directly from the committed file (brief §10.1).
         self.assertEqual(len(table.rows), support.SAMPLE_ROW_COUNT)
@@ -110,7 +110,7 @@ class LoaderTests(unittest.TestCase):
     def test_bom_is_stripped_before_header_validation(self):
         table = load_csv(self.write("bom.csv", support.BOM_TEXT))
         self.assertEqual(
-            table.headers, ["timestamp", "Service", "event_code", "severity", "message"]
+            table.headers, ["timestamp", "service", "event_code", "severity", "message"]
         )
         self.assertEqual(len(table.rows), 1)
         self.assertEqual(table.rows[0][4], "bom row")

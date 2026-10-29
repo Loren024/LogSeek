@@ -34,7 +34,7 @@ class RenderTests(unittest.TestCase):
         self.assertEqual(lines[3], "")
 
     def test_column_width_is_the_longest_displayed_value(self):
-        text = render(make_result(["Service"], [["auth"], ["payments"]]))
+        text = render(make_result(["service"], [["auth"], ["payments"]]))
         lines = text.split("\n")
         self.assertEqual(lines[1], "-" * 8)
         self.assertEqual(lines[2], "auth")
@@ -44,12 +44,12 @@ class RenderTests(unittest.TestCase):
         self.assertIn("a  b", text)
 
     def test_lines_are_right_trimmed(self):
-        text = render(make_result(["Service", "message"], [["auth", "x"]]))
+        text = render(make_result(["service", "message"], [["auth", "x"]]))
         for line in text.split("\n"):
             self.assertEqual(line, line.rstrip())
 
     def test_table_ends_with_exactly_one_newline(self):
-        text = render(make_result(["Service"], [["auth"]]))
+        text = render(make_result(["service"], [["auth"]]))
         self.assertTrue(text.endswith("\n"))
         self.assertFalse(text.endswith("\n\n"))
 
@@ -98,7 +98,7 @@ class RenderTests(unittest.TestCase):
         self.assertEqual(lines[1], "-" * len(header))
 
     def test_multiple_rows_keep_input_order(self):
-        text = render(make_result(["Service"], [["b"], ["a"]]))
+        text = render(make_result(["service"], [["b"], ["a"]]))
         self.assertEqual(text.split("\n")[2:4], ["b", "a"])
 
 class GeneratedFileRenderTests(unittest.TestCase):

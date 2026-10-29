@@ -81,7 +81,7 @@ class RequiredUnitTests(unittest.TestCase):
 
     def test_unit_02_find(self):
         result = self.run_query_file("02_find.lsq")
-        self.assertEqual(result.columns, ["Service", "message"])
+        self.assertEqual(result.columns, ["service", "message"])
         self.assertEqual(len(result.rows), support.SAMPLE_ROW_COUNT)
         self.assertEqual(result.rows[0], ["payments", "connection reset by peer"])
 
@@ -145,7 +145,7 @@ class RequiredUnitTests(unittest.TestCase):
     def test_unit_08_find_where(self):
         result = self.run_query_file("08_find_where.lsq")
         self.assertEqual(result.columns, ["timestamp", "event_code"])
-        # `Service = "gateway" AND message = "cache miss"` matches 76 rows.
+        # `service = "gateway" AND message = "cache miss"` matches 76 rows.
         self.assertEqual(len(result.rows), 76)
         self.assertEqual(result.rows[0], ["2026-09-01 03:10:29", "8302"])
         self.assertEqual(result.rows[-1], ["2027-03-26 08:31:16", "8300"])
@@ -180,7 +180,7 @@ class RequiredUnitTests(unittest.TestCase):
     def test_unit_11_find_where_order(self):
         result = self.run_query_file("11_find_where_order.lsq")
         self.assertEqual(result.columns, ["event_code"])
-        # `Service = "payments" AND event_code = "4021"` matches 551 rows.
+        # `service = "payments" AND event_code = "4021"` matches 551 rows.
         self.assertEqual(len(result.rows), 551)
         self.assertEqual({row[0] for row in result.rows}, {"4021"})
 
@@ -211,7 +211,7 @@ class RequiredUnitTests(unittest.TestCase):
 
     def test_unit_14_full_pipeline(self):
         result = self.run_query_file("14_full_pipeline.lsq")
-        self.assertEqual(result.columns, ["timestamp", "Service", "message"])
+        self.assertEqual(result.columns, ["timestamp", "service", "message"])
         self.assertEqual(
             result.rows,
             [
@@ -286,7 +286,7 @@ class FilteringTests(unittest.TestCase):
             ]
         )
         result = run_text(
-            'LOAD "a.csv"\nWHERE "severity" = "ERROR"\nWHERE "Service" = "auth"', table
+            'LOAD "a.csv"\nWHERE "severity" = "ERROR"\nWHERE "service" = "auth"', table
         )
         self.assertEqual(len(result.rows), 1)
 
@@ -300,7 +300,7 @@ class FilteringTests(unittest.TestCase):
         )
         result = run_text(
             'LOAD "a.csv"\n'
-            'WHERE "severity" = "ERROR" OR "severity" = "WARNING" AND "Service" = "payments"',
+            'WHERE "severity" = "ERROR" OR "severity" = "WARNING" AND "service" = "payments"',
             table,
         )
         self.assertEqual([row[1] for row in result.rows], ["auth", "payments"])
@@ -368,15 +368,15 @@ class SortingAndLimitTests(unittest.TestCase):
         )
 
     def test_text_sort_is_stable(self):
-        result = run_text('LOAD "a.csv"\nORDER BY "Service"', self.table)
+        result = run_text('LOAD "a.csv"\nORDER BY "service"', self.table)
         self.assertEqual([row[4] for row in result.rows], ["second", "third", "first"])
 
     def test_text_sort_descending_is_stable(self):
-        result = run_text('LOAD "a.csv"\nORDER BY "Service" DESC', self.table)
+        result = run_text('LOAD "a.csv"\nORDER BY "service" DESC', self.table)
         self.assertEqual([row[4] for row in result.rows], ["first", "second", "third"])
 
     def test_sort_column_may_be_outside_the_find_columns(self):
-        result = run_text('LOAD "a.csv"\nFIND "message"\nORDER BY "Service"', self.table)
+        result = run_text('LOAD "a.csv"\nFIND "message"\nORDER BY "service"', self.table)
         self.assertEqual(result.columns, ["message"])
         self.assertEqual([row[0] for row in result.rows], ["second", "third", "first"])
 
@@ -385,12 +385,12 @@ class SortingAndLimitTests(unittest.TestCase):
         self.assertEqual(len(result.rows), 3)
 
     def test_limit_is_applied_after_sorting(self):
-        result = run_text('LOAD "a.csv"\nORDER BY "Service" DESC\nLIMIT 1', self.table)
+        result = run_text('LOAD "a.csv"\nORDER BY "service" DESC\nLIMIT 1', self.table)
         self.assertEqual([row[4] for row in result.rows], ["first"])
 
     def test_find_column_order_is_preserved(self):
-        result = run_text('LOAD "a.csv"\nFIND "message", "Service"', self.table)
-        self.assertEqual(result.columns, ["message", "Service"])
+        result = run_text('LOAD "a.csv"\nFIND "message", "service"', self.table)
+        self.assertEqual(result.columns, ["message", "service"])
         self.assertEqual(result.rows[0], ["first", "b"])
 
     def test_projection_does_not_modify_stored_values(self):

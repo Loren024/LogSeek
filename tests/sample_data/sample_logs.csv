@@ -1,4 +1,4 @@
-timestamp,Service,event_code,severity,message
+timestamp,service,event_code,severity,message
 2026-09-01 00:00:00,payments,4021,INFO,connection reset by peer
 2026-09-01 00:16:01,auth,1181,INFO,disk usage above threshold
 2026-09-01 00:21:52,gateway,8300,DEBUG,connection reset by peer

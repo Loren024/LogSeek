@@ -17,7 +17,7 @@ from typing import Iterable, List, Optional, Tuple
 
 SCHEMA_HEADERS: Tuple[str, ...] = (
     "timestamp",
-    "Service",
+    "service",
     "event_code",
     "severity",
     "message",

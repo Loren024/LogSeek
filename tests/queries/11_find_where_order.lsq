@@ -1,4 +1,4 @@
 LOAD "tests/sample_data/sample_logs.csv"
-WHERE "Service" = "payments" AND "event_code" = "4021"
+WHERE "service" = "payments" AND "event_code" = "4021"
 FIND "event_code"
 ORDER BY "timestamp" DESC

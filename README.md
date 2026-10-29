@@ -38,7 +38,7 @@ LIMIT 5
 
 $ python logseek.py errors_this_month.lsq
 
-timestamp            Service   event_code  severity  message
+timestamp            service   event_code  severity  message
 -------------------- --------- ----------- --------- -------------------------
 2026-10-01 09:15:00  payments  4021        ERROR     retry limit exceeded
 2026-10-01 08:44:02  auth      1180        ERROR     token expired
@@ -62,12 +62,12 @@ The CSV must have exactly these five columns, with these exact header names in t
 exact order:
 
 ```
-timestamp,Service,event_code,severity,message
+timestamp,service,event_code,severity,message
 ```
 
 Missing, additional, renamed, or reordered columns are invalid. Column references in
-queries must match the schema exactly, including capitalization: use `Service`, not
-`service`. The file name must end with the lowercase `.csv` extension. A leading UTF-8
+queries must match the schema exactly, including capitalization: use `service`, not
+`Service`. The file name must end with the lowercase `.csv` extension. A leading UTF-8
 BOM is stripped before the header is validated. Input and output follow RFC 4180: fields
 containing a comma, a double quote, or a line break are enclosed in double quotes, and a
 literal double quote inside a quoted field is written as two double quotes.

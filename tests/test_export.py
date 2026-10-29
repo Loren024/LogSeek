@@ -40,17 +40,17 @@ class ExportTests(unittest.TestCase):
             return handle.read()
 
     def test_writes_crlf_and_utf8_without_bom(self):
-        result = make_result(["Service", "message"], [["auth", "x"], ["payments", "y"]])
+        result = make_result(["service", "message"], [["auth", "x"], ["payments", "y"]])
         export_csv(self.destination, result, self.source)
         self.assertEqual(
             self.read_bytes(self.destination),
-            b"Service,message\r\n" + b"auth,x\r\n" + b"payments,y\r\n",
+            b"service,message\r\n" + b"auth,x\r\n" + b"payments,y\r\n",
         )
 
     def test_zero_rows_writes_a_header_only_file(self):
-        result = make_result(["Service", "message"], [])
+        result = make_result(["service", "message"], [])
         export_csv(self.destination, result, self.source)
-        self.assertEqual(self.read_bytes(self.destination), b"Service,message\r\n")
+        self.assertEqual(self.read_bytes(self.destination), b"service,message\r\n")
 
     def test_rfc4180_quoting_is_applied(self):
         result = make_result(["message"], [["retry, limit"], ['said "hi"']])
@@ -75,21 +75,21 @@ class ExportTests(unittest.TestCase):
 
     def test_source_file_cannot_be_overwritten(self):
         with self.assertRaises(LogSeekError) as caught:
-            export_csv(self.source, make_result(["Service"], [["auth"]]), self.source)
+            export_csv(self.source, make_result(["service"], [["auth"]]), self.source)
         self.assertEqual(caught.exception.category, "export")
         self.assertEqual(caught.exception.message, "refusing to overwrite the source CSV")
 
     def test_source_file_cannot_be_overwritten_via_another_spelling(self):
         alternate = os.path.join(self._tempdir.name, ".", "source.csv")
         with self.assertRaises(LogSeekError) as caught:
-            export_csv(alternate, make_result(["Service"], [["auth"]]), self.source)
+            export_csv(alternate, make_result(["service"], [["auth"]]), self.source)
         self.assertEqual(caught.exception.category, "export")
 
     def test_uppercase_extension_is_rejected(self):
         with self.assertRaises(LogSeekError) as caught:
             export_csv(
                 os.path.join(self._tempdir.name, "OUT.CSV"),
-                make_result(["Service"], [["auth"]]),
+                make_result(["service"], [["auth"]]),
                 self.source,
             )
         self.assertEqual(caught.exception.category, "export")
@@ -98,14 +98,14 @@ class ExportTests(unittest.TestCase):
     def test_missing_destination_directory_is_an_export_error(self):
         target = os.path.join(self._tempdir.name, "missing", "out.csv")
         with self.assertRaises(LogSeekError) as caught:
-            export_csv(target, make_result(["Service"], [["auth"]]), self.source)
+            export_csv(target, make_result(["service"], [["auth"]]), self.source)
         self.assertEqual(caught.exception.category, "export")
         self.assertIn("does not exist", caught.exception.message)
         self.assertFalse(os.path.exists(os.path.dirname(target)))
 
     def test_new_destination_needs_no_confirmation(self):
         with mock.patch.object(logseek, "_open_interactive_input", return_value=(None, False)):
-            export_csv(self.destination, make_result(["Service"], [["auth"]]), self.source)
+            export_csv(self.destination, make_result(["service"], [["auth"]]), self.source)
         self.assertTrue(os.path.exists(self.destination))
 
     def test_declining_leaves_the_existing_file_unchanged(self):
@@ -114,22 +114,22 @@ class ExportTests(unittest.TestCase):
             handle.write(original)
         with mock.patch.object(logseek, "_read_overwrite_answer", return_value="n\n"):
             with self.assertRaises(ExportCancelled):
-                export_csv(self.destination, make_result(["Service"], [["auth"]]), self.source)
+                export_csv(self.destination, make_result(["service"], [["auth"]]), self.source)
         self.assertEqual(self.read_bytes(self.destination), original)
 
     def test_accepting_overwrites_the_file(self):
         with open(self.destination, "wb") as handle:
             handle.write(b"old\r\n")
         with mock.patch.object(logseek, "_read_overwrite_answer", return_value="Y\n"):
-            export_csv(self.destination, make_result(["Service"], [["auth"]]), self.source)
-        self.assertEqual(self.read_bytes(self.destination), b"Service\r\nauth\r\n")
+            export_csv(self.destination, make_result(["service"], [["auth"]]), self.source)
+        self.assertEqual(self.read_bytes(self.destination), b"service\r\nauth\r\n")
 
     def test_empty_answer_declines(self):
         with open(self.destination, "wb") as handle:
             handle.write(b"old\r\n")
         with mock.patch.object(logseek, "_read_overwrite_answer", return_value=""):
             with self.assertRaises(ExportCancelled):
-                export_csv(self.destination, make_result(["Service"], [["auth"]]), self.source)
+                export_csv(self.destination, make_result(["service"], [["auth"]]), self.source)
         self.assertEqual(self.read_bytes(self.destination), b"old\r\n")
 
     def test_prompt_is_written_to_stderr_when_input_is_interactive(self):
@@ -140,7 +140,7 @@ class ExportTests(unittest.TestCase):
             logseek, "_open_interactive_input", return_value=(io.StringIO("y\n"), False)
         ):
             with contextlib.redirect_stderr(stderr):
-                export_csv(self.destination, make_result(["Service"], [["auth"]]), self.source)
+                export_csv(self.destination, make_result(["service"], [["auth"]]), self.source)
         self.assertIn("already exists. Overwrite? [y/N] ", stderr.getvalue())
 
     def test_no_prompt_is_shown_when_input_is_not_interactive(self):
@@ -150,19 +150,19 @@ class ExportTests(unittest.TestCase):
         with mock.patch.object(logseek, "_open_interactive_input", return_value=(None, False)):
             with contextlib.redirect_stderr(stderr):
                 with self.assertRaises(ExportCancelled):
-                    export_csv(self.destination, make_result(["Service"], [["auth"]]), self.source)
+                    export_csv(self.destination, make_result(["service"], [["auth"]]), self.source)
         self.assertEqual(stderr.getvalue(), "")
 
     def test_export_preserves_column_and_row_order(self):
-        result = make_result(["message", "Service"], [["first", "b"], ["second", "a"]])
+        result = make_result(["message", "service"], [["first", "b"], ["second", "a"]])
         export_csv(self.destination, result, self.source)
         self.assertEqual(
             self.read_bytes(self.destination),
-            b"message,Service\r\nfirst,b\r\nsecond,a\r\n",
+            b"message,service\r\nfirst,b\r\nsecond,a\r\n",
         )
     def test_header_only_source_exports_a_header_only_file(self):
-        export_csv(self.destination, make_result(["Service"], []), self.source)
-        self.assertEqual(self.read_bytes(self.destination), b"Service\r\n")
+        export_csv(self.destination, make_result(["service"], []), self.source)
+        self.assertEqual(self.read_bytes(self.destination), b"service\r\n")
 
     def test_quoted_source_values_round_trip_through_export(self):
         source = support.write_csv(

@@ -1,2 +1,2 @@
 LOAD "tests/sample_data/sample_logs.csv"
-FIND "Service", "message"
+FIND "service", "message"
