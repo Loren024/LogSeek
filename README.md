@@ -186,8 +186,6 @@ python -m pytest tests
 ```
 logseek.py                  single-module implementation + CLI entry point
 README.md                   this file
-OPEN_QUESTIONS.md           ambiguities found during implementation
-documentation/              language specification and implementation brief
 tests/                      test modules and the 14 required query units
 tests/support.py            shared helpers: paths, runtime CSVs, stream capture
 tests/sample_data/          committed 10,000-row dataset (read-only test input)
